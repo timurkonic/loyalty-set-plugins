@@ -1,9 +1,4 @@
-plugins {
-    id 'org.ajoberstar.grgit' version '1.7.2'
-}
-
 apply plugin: 'java'
-apply plugin: 'org.ajoberstar.grgit'
 
 version = '1.0'
 compileJava.options.encoding = 'UTF-8'
@@ -17,28 +12,17 @@ repositories {
 }
 
 jar {
+    archiveBaseName = 'LineCardPlugin'
     manifest {
-        def gitRevision = ""
-        def gitBranch = ""
-        try {
-           gitRevision = "${grgit.head().abbreviatedId}"
-           gitBranch = "${grgit.branch.getCurrent().name}"
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-
         attributes (
                 'Build-Date' : new Date().format("dd.MM.yyyy HH:mm:ss"),
-                'Implementation-Version': version,
+                'Implementation-Version': "1.0",
                 'Implementation-Vendor' : 'GRINN',
                 'Build-Machine' : InetAddress.getLocalHost().getCanonicalHostName(),
                 'Vendor-URL' : 'http://www.grinn-corp.ru',
                 'Vendor-Email' : 'grinn@grinn-corp.ru',
                 'Vendor-Phone' : '+7 (4712) 73-06-72',
-                'Project': project.name,
-                'Revision': gitRevision,
-                'Branch': gitBranch
+                'Project': project.name
         )
     }
 }
@@ -69,6 +53,3 @@ dependencies {
                 'commons-lang:commons-lang:2.6'
 }
 
-jar {
-    baseName = 'LineCardPlugin'
-}
