@@ -1,0 +1,74 @@
+plugins {
+    id 'org.ajoberstar.grgit' version '1.7.2'
+}
+
+apply plugin: 'java'
+apply plugin: 'org.ajoberstar.grgit'
+
+version = '1.0'
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = 'UTF-8'
+
+repositories {
+    mavenCentral()
+    maven {
+        url "https://artifactory.setmachine.ru:8443/repository/set10-api-public"
+    }
+}
+
+jar {
+    manifest {
+        def gitRevision = ""
+        def gitBranch = ""
+        try {
+           gitRevision = "${grgit.head().abbreviatedId}"
+           gitBranch = "${grgit.branch.getCurrent().name}"
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        attributes (
+                'Build-Date' : new Date().format("dd.MM.yyyy HH:mm:ss"),
+                'Implementation-Version': version,
+                'Implementation-Vendor' : 'GRINN',
+                'Build-Machine' : InetAddress.getLocalHost().getCanonicalHostName(),
+                'Vendor-URL' : 'http://www.grinn-corp.ru',
+                'Vendor-Email' : 'grinn@grinn-corp.ru',
+                'Vendor-Phone' : '+7 (4712) 73-06-72',
+                'Project': project.name,
+                'Revision': gitRevision,
+                'Branch': gitBranch
+        )
+    }
+}
+
+dependencies {
+    //compile project(':API:Set10POSAPI')
+    implementation 'ru.crystals.api:set10pos-api:0.0.78'
+    compileOnly 'commons-lang:commons-lang:2.6',
+     'commons-codec:commons-codec:1.7',
+     'commons-collections:commons-collections:3.2.1',
+     'org.apache.commons:commons-compress:1.8.1',
+     'commons-io:commons-io:2.4',
+     'com.google.guava:guava:18.0',
+     'org.apache.httpcomponents:httpclient:4.5.2',
+     'org.apache.httpcomponents:httpmime:4.5.2',
+     'org.postgresql:postgresql:9.4-1201-jdbc41',
+     'joda-time:joda-time:2.5',
+     'com.thoughtworks.xstream:xstream:1.4.7',
+     'com.fasterxml.jackson.core:jackson-annotations:2.9.3',
+     'com.fasterxml.jackson.core:jackson-core:2.9.3',
+     'com.fasterxml.jackson.core:jackson-databind:2.9.3',
+     'com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.9.3',
+     'org.slf4j:slf4j-api:1.7.12',
+     'javax.annotation:javax.annotation-api:1.2-b01'
+
+    testImplementation 'junit:junit:4.12',
+                'org.mockito:mockito-core:1.10.19',
+                'commons-lang:commons-lang:2.6'
+}
+
+jar {
+    baseName = 'LineCardPlugin'
+}
