@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 public final class PluginConfigurationLoader {
+    private static final String PLUGIN_CONFIGURATION_PATH = "/home/tc/storage/crystal-cash/config/plugins/Loyalty-grinn.xml";
 
     public static PluginConfiguration loadPluginConfiguration(Logger log) {
         try {

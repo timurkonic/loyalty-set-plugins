@@ -6,8 +6,6 @@ import ru.crystals.pos.spi.POSInfo;
 import ru.crystals.pos.spi.annotation.Inject;
 
 public class LinePlugin {
-    private static final String PLUGIN_CONFIGURATION_PATH = "/home/tc/storage/crystal-cash/config/plugins/Loyalty-grinn.xml";
-
     @Inject
     protected Logger log;
 
@@ -23,7 +21,7 @@ public class LinePlugin {
     }
 
     protected boolean isCardNumber(String cardNumber) {
-        return cardNumber != null && cardNumber.matches("^99\\d{11}$");
+        return cardNumber != null && cardNumber.matches("^9900\\d{9}$");
     }
 
     protected PluginConfiguration getPluginConfiguration() {
