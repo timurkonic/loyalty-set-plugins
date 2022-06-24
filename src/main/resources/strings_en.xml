@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+    <entry key="processing.description">Card processing (Grinn corporation)</entry>
+    <entry key="url.description">URL of processing</entry>
+    <entry key="connectionTimeout.description">Connection timeout in millis</entry>
+    <entry key="readTimeout.description">Read timeout in millis</entry>
+    <entry key="cardplugin.description">Card Liniya plugin</entry>
+    <entry key="loyaltyplugin.description">Loyalty Liniya plugin</entry>
+    <entry key="paymentplugin.description">Payment Liniya plugin</entry>
+    <entry key="paymentplugin.card">Card number</entry>
+    <entry key="goodsplugin.description">Goods Linuya plugin</entry>
+    <entry key="giftCardAmountBy.description">Gift card amount by</entry>
+    <entry key="actionbirthdayplugin.description">Action birthday Liniya plugin</entry>
+    <entry key="techprocessbirthdayplugin.description">Techprocess birthday Liniya plugin</entry>
+    <entry key="sbercardplugin.description">Card Liniya Sbermarket plugin</entry>
+    <entry key="actiondinnerdiscountplugin.description">Action birthday Liniya plugin</entry>
+</properties>

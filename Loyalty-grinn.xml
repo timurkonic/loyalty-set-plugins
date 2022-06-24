@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<pluginConfiguration>
+	<accrueBonusAllowed>false</accrueBonusAllowed>
+	<payBonusAllowed>false</payBonusAllowed>
+	<cardDiscountAllowed>false</cardDiscountAllowed>
+	<dinnerDiscountAllowed>true</dinnerDiscountAllowed>
+</pluginConfiguration>

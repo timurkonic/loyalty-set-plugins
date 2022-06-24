@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+    <entry key="processing.description">Карточный процессинг (Корпорация ГРИНН)</entry>
+    <entry key="url.description">URL процессинга</entry>
+    <entry key="connectionTimeout.description">Таймаут соединения (миллисекунды)</entry>
+    <entry key="readTimeout.description">Таймаут чтения (миллисекунды)</entry>
+    <entry key="cardplugin.description">Плагин карт ЛИНИЯ</entry>
+    <entry key="loyaltyplugin.description">Плагин лояльности ЛИНИЯ</entry>
+    <entry key="paymentplugin.description">Оплата картой ЛИНИЯ</entry>
+    <entry key="paymentplugin.card">Номер карты</entry>
+    <entry key="goodsplugin.description">Плагин товаров ЛИНИЯ</entry>
+    <entry key="giftCardAmountBy.description">Зачисление на подарочную карту кратно</entry>
+    <entry key="actionbirthdayplugin.description">Плагин акции на день рождения ЛИНИЯ</entry>
+    <entry key="techprocessbirthdayplugin.description">Техпроцесс акции на день рождения ЛИНИЯ</entry>
+    <entry key="sbercardplugin.description">Плагин карт ЛИНИЯ Сбермаркет</entry>
+    <entry key="actiondinnerdiscountplugin.description">Плагин акции скидки в столовой</entry>
+</properties>

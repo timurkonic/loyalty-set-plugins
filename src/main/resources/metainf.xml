@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SetIntegration set10-api-version="0.0.9" version="2.0.0" xmlns="http://crystals.ru/set10/api/metainf" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://crystals.ru/set10/api/metainf metainf.xsd ">
+    <ExternalService serviceType="LOYALTY" localeKey="processing.description" id="grinn.loyalty">
+        <Options>
+            <URL key="url" localeKey="url.description" default-value="http://loyalty.line.lan/sapi/" required="true"/>
+            <Integer key="connectionTimeout" localeKey="connectionTimeout.description" minValue="1000" maxValue="60000" default-value="5000"/>
+            <Integer key="readTimeout" localeKey="readTimeout.description" minValue="1000" maxValue="60000" default-value="5000"/>
+            <Integer key="giftCardAmountBy" localeKey="giftCardAmountBy.description" minValue="100" maxValue="1000" default-value="500"/>
+        </Options>
+
+        <CardPlugin localeKey="cardplugin.description" id="grinn.loyalty.cardplugin">
+            <Description>Плагин карт ЛИНИЯ</Description>
+        </CardPlugin>
+
+    </ExternalService>
+</SetIntegration>
