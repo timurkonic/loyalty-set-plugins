@@ -1,8 +1,5 @@
 package ru.grinn.loyalty;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import javax.xml.bind.JAXBContext;
 import org.slf4j.Logger;
 import ru.crystals.pos.spi.IntegrationProperties;
 import ru.crystals.pos.spi.POSInfo;
@@ -31,23 +28,8 @@ public class LinePlugin {
 
     protected PluginConfiguration getPluginConfiguration() {
         if (pluginConfiguration == null)
-            pluginConfiguration = loadPluginConfiguration();
+            pluginConfiguration = PluginConfigurationLoader.loadPluginConfiguration(log);
         return pluginConfiguration;
-    }
-
-    private PluginConfiguration loadPluginConfiguration() {
-        try {
-            JAXBContext context = JAXBContext.newInstance(PluginConfiguration.class);
-            return (PluginConfiguration) context.createUnmarshaller().unmarshal(new FileInputStream(PLUGIN_CONFIGURATION_PATH));
-        }
-        catch (IOException e) {
-            log.info("Config file not found. Loading default configuration...");
-            return new PluginConfiguration();
-        }
-        catch (Exception e) {
-            log.error("Load error: {}", e);
-            return new PluginConfiguration();
-        }
     }
 
 }
