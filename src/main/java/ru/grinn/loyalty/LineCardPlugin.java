@@ -1,7 +1,6 @@
 package ru.grinn.loyalty;
 
 import java.math.BigDecimal;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.LinkedHashMap;
 import javax.annotation.PostConstruct;
@@ -138,12 +137,7 @@ public class LineCardPlugin extends LinePlugin implements CardPlugin {
             cardHolder.setFirstName(account.getOwnerFirstName());
             cardHolder.setMiddleName(account.getOwnerThirdName());
 
-            if (account.getOwnerBirthday() != null) {
-                try {
-                    cardHolder.setBirthDate(dateFormat.parse(account.getOwnerBirthday()));
-                }
-                catch (ParseException ignored) {}
-            }
+            cardHolder.setBirthDate(account.getOwnerBirthday());
 
             cardHolder.setPhone(account.getOwnerPhone());
             cardHolder.setEmail(account.getOwnerEmail());

@@ -1,18 +1,31 @@
 package ru.grinn.loyalty;
 
+import com.fasterxml.jackson.databind.DeserializationConfig;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import ru.crystals.pos.spi.IntegrationProperties;
 import ru.grinn.loyalty.dto.Account;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 
 public final class APIRequest {
     private IntegrationProperties properties;
+    private ObjectMapper objectMapper;
 
     public APIRequest(IntegrationProperties properties) {
         this.properties = properties;
+        initObjectMapper();
+    }
+
+    private void initObjectMapper() {
+        objectMapper = new ObjectMapper();
+        objectMapper.setDateFormat(new SimpleDateFormat("dd/MM/yyyy"));
+        objectMapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
+        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
     }
 
     private String getApiUrl() {
@@ -30,6 +43,6 @@ public final class APIRequest {
         connection.setRequestMethod("GET");
         connection.connect();
 
-        return new ObjectMapper().readValue(connection.getInputStream(), Account.class);
+        return objectMapper.readValue(connection.getInputStream(), Account.class);
     }
 }

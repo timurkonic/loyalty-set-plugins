@@ -1,13 +1,8 @@
 package ru.grinn.loyalty.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-
 import java.math.BigDecimal;
+import java.util.Date;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class Account {
     private String id;
     private BigDecimal balance;
@@ -20,7 +15,7 @@ public class Account {
     private String ownerFamilyName;
     private String ownerFirstName;
     private String ownerThirdName;
-    private String ownerBirthday;
+    private Date ownerBirthday;
     private String ownerPhone;
     private String ownerEmail;
     private int ownerFilled;
@@ -116,11 +111,11 @@ public class Account {
         this.ownerThirdName = ownerThirdName;
     }
 
-    public String getOwnerBirthday() {
+    public Date getOwnerBirthday() {
         return ownerBirthday;
     }
 
-    public void setOwnerBirthday(String ownerBirthday) {
+    public void setOwnerBirthday(Date ownerBirthday) {
         this.ownerBirthday = ownerBirthday;
     }
 
