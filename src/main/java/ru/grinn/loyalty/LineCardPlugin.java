@@ -72,7 +72,10 @@ public class LineCardPlugin extends LinePlugin implements CardPlugin {
             if (card.getCardHolder().getEmail() != null)
                 cardInfoMap.put("Email", card.getCardHolder().getEmail());
         }
-        cardInfoMap.put("Статус карты", card.getCardStatus() == CardStatus.ACTIVE ? "Активна" : "Заблокирована");
+
+        cardInfoMap.put("Статус карты", (card.getCardStatus() == CardStatus.ACTIVE ? "Активна" : "Заблокирована") +
+                (Integer.parseInt(card.getExtendedAttributes().getOrDefault("ownerFilled", "0")) == 0 ? ", не активирована" : ", активирована"));
+
         cardInfoMap.put("Баланс бонусов", card.getBonusBalance() != null ? String.valueOf(card.getBonusBalance().getBalance()) : "0.00");
         cardInfoMap.put("Баланс рублей", card.getExtendedAttributes().get("balance"));
         cardInfoMap.put("Скидка", card.getExtendedAttributes().get("discount"));
@@ -80,7 +83,9 @@ public class LineCardPlugin extends LinePlugin implements CardPlugin {
         if (Integer.parseInt(card.getExtendedAttributes().getOrDefault("block", "0")) > 0)
             cardInfoMap.put("Блокировка", card.getExtendedAttributes().get("blockName"));
 
-        cardInfoMap.put("Активирована", Integer.parseInt(card.getExtendedAttributes().getOrDefault("ownerFilled", "0")) == 0 ? "Нет" : "Да");
+        if (Boolean.parseBoolean(card.getExtendedAttributes().getOrDefault("birthdayAction", "false"))) {
+            cardInfoMap.put("Акция к ДР", "Активна");
+        }
 
         CardInfo cardInfo = new CardInfo(CardSearchResponseStatus.OK, cardInfoMap);
         cardInfo.setTitle(card.getExtendedAttributes().get("typeName"));
@@ -150,6 +155,8 @@ public class LineCardPlugin extends LinePlugin implements CardPlugin {
             card.setBonusBalance(new BonusBalanceEntity(account.getBalanceBns()));
 
             card.getExtendedAttributes().put("discount", String.valueOf(account.getDiscount()));
+
+            card.getExtendedAttributes().put("birthdayAction", String.valueOf(account.getBirthdayAction()));
 
             if (account.getWtmpass() != null)
                 card.getExtendedAttributes().put("wtmpass", account.getWtmpass());

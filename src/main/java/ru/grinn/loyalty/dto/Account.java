@@ -25,6 +25,7 @@ public class Account {
     private String ownerEmail;
     private int ownerFilled;
     private BigDecimal discount;
+    private String birthdayAction;
     private String wtmpass;
 
     public String getId() {
@@ -155,6 +156,14 @@ public class Account {
         this.discount = discount;
     }
 
+    public String getBirthdayAction() {
+        return birthdayAction;
+    }
+
+    public void setBirthdayAction(String birthdayAction) {
+        this.birthdayAction = birthdayAction;
+    }
+
     public String getWtmpass() {
         return wtmpass;
     }
@@ -182,6 +191,7 @@ public class Account {
                 ", ownerEmail='" + ownerEmail + '\'' +
                 ", ownerFilled=" + ownerFilled +
                 ", discount=" + discount +
+                ", birthdayAction='" + birthdayAction + '\'' +
                 ", wtmpass='" + wtmpass + '\'' +
                 '}';
     }
