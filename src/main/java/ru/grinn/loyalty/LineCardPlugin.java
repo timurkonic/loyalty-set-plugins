@@ -3,7 +3,7 @@ package ru.grinn.loyalty;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import javax.annotation.PostConstruct;
 
 import ru.crystals.pos.api.card.*;
@@ -19,7 +19,7 @@ import ru.grinn.loyalty.dto.Account;
 public class LineCardPlugin extends LinePlugin implements CardPlugin {
     public static final String PLUGIN_NAME = "grinn.loyalty.cardplugin";
 
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
     @PostConstruct
     void init() {
@@ -61,12 +61,16 @@ public class LineCardPlugin extends LinePlugin implements CardPlugin {
             return new CardInfo(response.getResponseStatus(), null);
         }
         Card card = response.getCard();
-        HashMap<String, String> cardInfoMap = new HashMap<>();
+        LinkedHashMap<String, String> cardInfoMap = new LinkedHashMap<>();
         if (card.getCardHolder() != null) {
             if (card.getCardHolder().getLastName() != null && card.getCardHolder().getFirstName() != null && card.getCardHolder().getMiddleName() != null)
             cardInfoMap.put("Покупатель", String.format("%s %s %s", card.getCardHolder().getLastName(), card.getCardHolder().getFirstName(), card.getCardHolder().getMiddleName()));
             if (card.getCardHolder().getBirthDate() != null)
                 cardInfoMap.put("Дата рождения", dateFormat.format(card.getCardHolder().getBirthDate()));
+            if (card.getCardHolder().getPhone() != null)
+                cardInfoMap.put("Телефон", card.getCardHolder().getPhone());
+            if (card.getCardHolder().getEmail() != null)
+                cardInfoMap.put("Email", card.getCardHolder().getEmail());
         }
         cardInfoMap.put("Статус карты", card.getCardStatus() == CardStatus.ACTIVE ? "Активна" : "Заблокирована");
         cardInfoMap.put("Баланс бонусов", card.getBonusBalance() != null ? String.valueOf(card.getBonusBalance().getBalance()) : "0.00");
@@ -135,6 +139,9 @@ public class LineCardPlugin extends LinePlugin implements CardPlugin {
                 }
                 catch (ParseException ignored) {}
             }
+
+            cardHolder.setPhone(account.getOwnerPhone());
+            cardHolder.setEmail(account.getOwnerEmail());
 
             card.getExtendedAttributes().put("ownerFilled", String.valueOf(account.getOwnerFilled()));
 
