@@ -1,4 +1,4 @@
-package ru.grinn.loyalty;
+package ru.grinn.loyalty.dto;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -18,7 +18,7 @@ public final class PluginConfiguration {
     @XmlElement
     private final boolean dinnerDiscountAllowed;
 
-    PluginConfiguration() {
+    public PluginConfiguration() {
         accrueBonusAllowed = true;
         payBonusAllowed = true;
         cardDiscountAllowed = true;

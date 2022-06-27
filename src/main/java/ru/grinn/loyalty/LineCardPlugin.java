@@ -2,14 +2,16 @@ package ru.grinn.loyalty;
 
 import java.math.BigDecimal;
 import java.util.TreeMap;
+import javax.annotation.PostConstruct;
 
+import ru.crystals.pos.api.card.*;
 import ru.crystals.pos.api.plugin.*;
 import ru.crystals.pos.api.plugin.card.*;
 import ru.crystals.pos.spi.annotation.*;
 import ru.crystals.pos.spi.plugin.card.*;
 import ru.crystals.pos.spi.receipt.*;
 
-import javax.annotation.PostConstruct;
+import ru.grinn.loyalty.dto.Account;
 
 @POSPlugin(id = LineCardPlugin.PLUGIN_NAME)
 public class LineCardPlugin extends LinePlugin implements CardPlugin {
@@ -17,8 +19,8 @@ public class LineCardPlugin extends LinePlugin implements CardPlugin {
 
     @PostConstruct
     void init() {
+        super.init();
         log.info("Plugin {} loaded", this.getClass());
-        log.info("Plugin configuration: {}", getPluginConfiguration());
     }
 
     @Override
@@ -34,7 +36,7 @@ public class LineCardPlugin extends LinePlugin implements CardPlugin {
             String balance = result.getCard().getExtendedAttributes().get("balance");
             String discount = result.getCard().getExtendedAttributes().get("discount");
             if (balance != null && new BigDecimal(balance).compareTo(BigDecimal.ZERO) > 0) {
-                if (getPluginConfiguration().isCardDiscountAllowed() && discount != null && new BigDecimal(discount).compareTo(BigDecimal.ZERO) > 0)
+                if (pluginConfiguration.isCardDiscountAllowed() && discount != null && new BigDecimal(discount).compareTo(BigDecimal.ZERO) > 0)
                     result.addCashierMessage(String.format("Баланс карты в рублях: %s, скидка: %s%%\nЧек необходимо оплатить балансом с карты", balance, discount));
                 else
                     result.addCashierMessage(String.format("Баланс карты в рублях: %s", balance));
@@ -58,16 +60,16 @@ public class LineCardPlugin extends LinePlugin implements CardPlugin {
         TreeMap<String, String> cardInfoMap = new TreeMap<>();
         cardInfoMap.put("Покупатель", String.format("%s %s %s", card.getCardHolder().getLastName(), card.getCardHolder().getFirstName(), card.getCardHolder().getMiddleName()));
         cardInfoMap.put("Дата рождения", card.getExtendedAttributes().get("birthday"));
-        cardInfoMap.put("Акция к ДР", card.getExtendedAttributes().get("birthdayAction").equals("yes") ? "да" : "нет");
         cardInfoMap.put("Статус карты", card.getCardStatus() == CardStatus.ACTIVE ? "Активна" : "Заблокирована");
         cardInfoMap.put("Баланс бонусов", card.getBonusBalance() != null ? String.valueOf(card.getBonusBalance().getBalance()) : "0.00");
         cardInfoMap.put("Баланс рублей", card.getExtendedAttributes().get("balance"));
         cardInfoMap.put("Скидка", card.getExtendedAttributes().get("discount"));
-        if (card.getExtendedAttributes().get("blockName").length() > 0)
+        if (Integer.parseInt(card.getExtendedAttributes().get("block")) > 0)
             cardInfoMap.put("Блокировка", card.getExtendedAttributes().get("blockName"));
+        cardInfoMap.put("Активирована", Integer.parseInt(card.getExtendedAttributes().get("ownerFilled")) == 0 ? "Нет" : "Да");
 
         CardInfo cardInfo = new CardInfo(CardSearchResponseStatus.OK, cardInfoMap);
-        cardInfo.setTitle(card.getExtendedAttributes().get("type"));
+        cardInfo.setTitle(card.getExtendedAttributes().get("typeName"));
         return cardInfo;
     }
 
@@ -89,7 +91,57 @@ public class LineCardPlugin extends LinePlugin implements CardPlugin {
     }
 
     private CardSearchResponse findCardByNumber(String number) {
-        return null;
+        try {
+            log.debug("findCardByNumber({})", number);
+
+            Account account = new APIRequest(properties).getAccount(number);
+            log.debug("getAccount: {}", account);
+
+            CardEntity card = new CardEntity();
+
+            CardHolderEntity cardHolder = new CardHolderEntity();
+            card.setCardHolder(cardHolder);
+
+            card.setId(account.getId());
+            card.setCardNumber(account.getId());
+
+            card.getExtendedAttributes().put("type", String.valueOf(account.getType()));
+            card.getExtendedAttributes().put("typeName", account.getTypeName());
+
+            if (account.getActive() == 0 || account.getBlock() != 0)
+                card.setCardStatus(CardStatus.BLOCKED);
+
+            card.getExtendedAttributes().put("active", String.valueOf(account.getActive()));
+            card.getExtendedAttributes().put("block", String.valueOf(account.getBlock()));
+            card.getExtendedAttributes().put("blockName", account.getBlockName());
+
+            cardHolder.setLastName(account.getOwnerFamilyName());
+            cardHolder.setFirstName(account.getOwnerFirstName());
+            cardHolder.setMiddleName(account.getOwnerThirdName());
+            card.getExtendedAttributes().put("birthday", account.getOwnerBirthday());
+            card.getExtendedAttributes().put("ownerFilled", String.valueOf(account.getOwnerFilled()));
+
+            card.getExtendedAttributes().put("balance", account.getBalance().toString());
+
+            card.setBonusBalance(new BonusBalanceEntity(account.getBalanceBns()));
+
+            card.getExtendedAttributes().put("discount", String.valueOf(account.getDiscount()));
+
+            if (account.getWtmpass() != null)
+                card.getExtendedAttributes().put("wtmpass", account.getWtmpass());
+
+            return new CardSearchResponse(CardSearchResponseStatus.OK, card);
+        }
+        catch (Exception e) {
+            log.debug("findCardByNumber error", e);
+            CardEntity card = new CardEntity();
+            card.setId(number);
+            card.setCardNumber(number);
+            card.setBonusBalance(new BonusBalanceEntity(BigDecimal.ZERO));
+            CardSearchResponse result = new CardSearchResponse(CardSearchResponseStatus.OK, card);
+            result.addCashierMessage("Ошибка подключения к процессингу");
+            return result;
+        }
     }
 
 }

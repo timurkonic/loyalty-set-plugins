@@ -4,30 +4,29 @@ import org.slf4j.Logger;
 import ru.crystals.pos.spi.IntegrationProperties;
 import ru.crystals.pos.spi.POSInfo;
 import ru.crystals.pos.spi.annotation.Inject;
+import ru.grinn.loyalty.dto.PluginConfiguration;
 
 public class LinePlugin {
     @Inject
-    protected Logger log;
+    protected static Logger log;
 
     @Inject
-    protected IntegrationProperties properties;
+    protected static IntegrationProperties properties;
 
     @Inject
-    protected POSInfo posInfo;
+    protected static POSInfo posInfo;
 
-    private PluginConfiguration pluginConfiguration;
+    protected PluginConfiguration pluginConfiguration;
 
     public LinePlugin() {
     }
 
-    protected boolean isCardNumber(String cardNumber) {
-        return cardNumber != null && cardNumber.matches("^9900\\d{9}$");
+    void init() {
+        pluginConfiguration = new PluginConfigurationLoader(log).getPluginConfiguration();
     }
 
-    protected PluginConfiguration getPluginConfiguration() {
-        if (pluginConfiguration == null)
-            pluginConfiguration = PluginConfigurationLoader.loadPluginConfiguration(log);
-        return pluginConfiguration;
+    protected boolean isCardNumber(String cardNumber) {
+        return cardNumber != null && cardNumber.matches("^9900\\d{9}$");
     }
 
 }
