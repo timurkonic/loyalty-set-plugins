@@ -27,7 +27,12 @@ public final class PluginConfiguration {
 
     @Override
     public String toString() {
-        return "{accrueBonusAllowed=" + accrueBonusAllowed + ", payBonusAllowed=" + payBonusAllowed + ", cardDiscountAllowed=" + cardDiscountAllowed + ", dinnerDiscountAllowed=" + dinnerDiscountAllowed + "}";
+        return "PluginConfiguration{" +
+                "accrueBonusAllowed=" + accrueBonusAllowed +
+                ", payBonusAllowed=" + payBonusAllowed +
+                ", cardDiscountAllowed=" + cardDiscountAllowed +
+                ", dinnerDiscountAllowed=" + dinnerDiscountAllowed +
+                '}';
     }
 
     public boolean isAccrueBonusAllowed() {
