@@ -18,9 +18,6 @@ public class LinePlugin {
 
     protected PluginConfiguration pluginConfiguration;
 
-    public LinePlugin() {
-    }
-
     void init() {
         pluginConfiguration = new PluginConfigurationLoader(log).getPluginConfiguration();
     }
