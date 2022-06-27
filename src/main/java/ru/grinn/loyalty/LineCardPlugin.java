@@ -1,7 +1,10 @@
 package ru.grinn.loyalty;
 
 import java.math.BigDecimal;
-import java.util.TreeMap;
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import javax.annotation.PostConstruct;
 
 import ru.crystals.pos.api.card.*;
@@ -16,6 +19,8 @@ import ru.grinn.loyalty.dto.Account;
 @POSPlugin(id = LineCardPlugin.PLUGIN_NAME)
 public class LineCardPlugin extends LinePlugin implements CardPlugin {
     public static final String PLUGIN_NAME = "grinn.loyalty.cardplugin";
+
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
     @PostConstruct
     void init() {
@@ -57,16 +62,22 @@ public class LineCardPlugin extends LinePlugin implements CardPlugin {
             return new CardInfo(response.getResponseStatus(), null);
         }
         Card card = response.getCard();
-        TreeMap<String, String> cardInfoMap = new TreeMap<>();
-        cardInfoMap.put("Покупатель", String.format("%s %s %s", card.getCardHolder().getLastName(), card.getCardHolder().getFirstName(), card.getCardHolder().getMiddleName()));
-        cardInfoMap.put("Дата рождения", card.getExtendedAttributes().get("birthday"));
+        HashMap<String, String> cardInfoMap = new HashMap<>();
+        if (card.getCardHolder() != null) {
+            if (card.getCardHolder().getLastName() != null && card.getCardHolder().getFirstName() != null && card.getCardHolder().getMiddleName() != null)
+            cardInfoMap.put("Покупатель", String.format("%s %s %s", card.getCardHolder().getLastName(), card.getCardHolder().getFirstName(), card.getCardHolder().getMiddleName()));
+            if (card.getCardHolder().getBirthDate() != null)
+                cardInfoMap.put("Дата рождения", dateFormat.format(card.getCardHolder().getBirthDate()));
+        }
         cardInfoMap.put("Статус карты", card.getCardStatus() == CardStatus.ACTIVE ? "Активна" : "Заблокирована");
         cardInfoMap.put("Баланс бонусов", card.getBonusBalance() != null ? String.valueOf(card.getBonusBalance().getBalance()) : "0.00");
         cardInfoMap.put("Баланс рублей", card.getExtendedAttributes().get("balance"));
         cardInfoMap.put("Скидка", card.getExtendedAttributes().get("discount"));
-        if (Integer.parseInt(card.getExtendedAttributes().get("block")) > 0)
+
+        if (Integer.parseInt(card.getExtendedAttributes().getOrDefault("block", "0")) > 0)
             cardInfoMap.put("Блокировка", card.getExtendedAttributes().get("blockName"));
-        cardInfoMap.put("Активирована", Integer.parseInt(card.getExtendedAttributes().get("ownerFilled")) == 0 ? "Нет" : "Да");
+
+        cardInfoMap.put("Активирована", Integer.parseInt(card.getExtendedAttributes().getOrDefault("ownerFilled", "0")) == 0 ? "Нет" : "Да");
 
         CardInfo cardInfo = new CardInfo(CardSearchResponseStatus.OK, cardInfoMap);
         cardInfo.setTitle(card.getExtendedAttributes().get("typeName"));
@@ -118,7 +129,14 @@ public class LineCardPlugin extends LinePlugin implements CardPlugin {
             cardHolder.setLastName(account.getOwnerFamilyName());
             cardHolder.setFirstName(account.getOwnerFirstName());
             cardHolder.setMiddleName(account.getOwnerThirdName());
-            card.getExtendedAttributes().put("birthday", account.getOwnerBirthday());
+
+            if (account.getOwnerBirthday() != null) {
+                try {
+                    cardHolder.setBirthDate(dateFormat.parse(account.getOwnerBirthday()));
+                }
+                catch (ParseException ignored) {}
+            }
+
             card.getExtendedAttributes().put("ownerFilled", String.valueOf(account.getOwnerFilled()));
 
             card.getExtendedAttributes().put("balance", account.getBalance().toString());
