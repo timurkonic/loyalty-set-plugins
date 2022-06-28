@@ -2,7 +2,9 @@ package ru.grinn.loyalty;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.Set;
 import javax.annotation.PostConstruct;
 
 import ru.crystals.pos.api.card.*;
@@ -73,9 +75,11 @@ public class LineCardPlugin extends LinePlugin implements CardPlugin {
             if (card.getCardHolder().getBirthDate() != null)
                 cardInfoMap.put("Дата рождения", dateFormat.format(card.getCardHolder().getBirthDate()));
             if (card.getCardHolder().getPhone() != null)
-                cardInfoMap.put("Телефон", card.getCardHolder().getPhone());
+                cardInfoMap.put("Телефон", card.getCardHolder().getPhone() +
+                    (card.getCardHolder().getReceiptFeedbackTypes().contains(ReceiptFeedbackType.BY_PHONE) ? " <- ЧЕК" : ""));
             if (card.getCardHolder().getEmail() != null)
-                cardInfoMap.put("Email", card.getCardHolder().getEmail());
+                cardInfoMap.put("Email", card.getCardHolder().getEmail() +
+                    (card.getCardHolder().getReceiptFeedbackTypes().contains(ReceiptFeedbackType.BY_EMAIL) ? " <- ЧЕК" : ""));
         }
 
         cardInfoMap.put("Статус карты", (card.getCardStatus() == CardStatus.ACTIVE ? "Активна" : "Заблокирована") +
@@ -161,7 +165,17 @@ public class LineCardPlugin extends LinePlugin implements CardPlugin {
 
             CardEntity card = new CardEntity();
 
-            CardHolderEntity cardHolder = new CardHolderEntity();
+            HashSet<ReceiptFeedbackType> receiptFeedbackTypes = new HashSet<>();
+            if (account.isReceiptPhone())
+                receiptFeedbackTypes.add(ReceiptFeedbackType.BY_PHONE);
+            if (account.isReceiptEmail())
+                receiptFeedbackTypes.add(ReceiptFeedbackType.BY_EMAIL);
+
+            CardHolderEntity cardHolder = new CardHolderEntity() { // Crystals sucks
+                public Set<ReceiptFeedbackType> getReceiptFeedbackTypes() {
+                    return receiptFeedbackTypes;
+                }
+            };
             card.setCardHolder(cardHolder);
 
             card.setId(account.getId());
@@ -198,6 +212,8 @@ public class LineCardPlugin extends LinePlugin implements CardPlugin {
 
             if (account.getWtmpass() != null)
                 card.getExtendedAttributes().put("wtmpass", account.getWtmpass());
+
+            card.getExtendedAttributes().put("block", String.valueOf(account.getBlock()));
 
             return new CardSearchResponse(CardSearchResponseStatus.OK, card);
         }

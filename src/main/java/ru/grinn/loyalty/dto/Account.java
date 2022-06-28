@@ -22,6 +22,8 @@ public class Account {
     private BigDecimal discount;
     private String birthdayAction;
     private String wtmpass;
+    private boolean receiptPhone;
+    private boolean receiptEmail;
 
     public String getId() {
         return id;
@@ -95,6 +97,14 @@ public class Account {
         return wtmpass;
     }
 
+    public boolean isReceiptPhone() {
+        return receiptPhone;
+    }
+
+    public boolean isReceiptEmail() {
+        return receiptEmail;
+    }
+
     @Override
     public String toString() {
         return "Account{" +
@@ -109,13 +119,15 @@ public class Account {
                 ", ownerFamilyName='" + ownerFamilyName + '\'' +
                 ", ownerFirstName='" + ownerFirstName + '\'' +
                 ", ownerThirdName='" + ownerThirdName + '\'' +
-                ", ownerBirthday='" + ownerBirthday + '\'' +
+                ", ownerBirthday=" + ownerBirthday +
                 ", ownerPhone='" + ownerPhone + '\'' +
                 ", ownerEmail='" + ownerEmail + '\'' +
                 ", ownerFilled=" + ownerFilled +
                 ", discount=" + discount +
                 ", birthdayAction='" + birthdayAction + '\'' +
                 ", wtmpass='" + wtmpass + '\'' +
+                ", receiptPhone=" + receiptPhone +
+                ", receiptEmail=" + receiptEmail +
                 '}';
     }
 }
