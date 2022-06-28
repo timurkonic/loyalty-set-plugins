@@ -150,11 +150,7 @@ public class LineLoyaltyPlugin extends LinePlugin implements LoyaltyPlugin {
 
             BigDecimal bonusAmount = getReceiptBonusAmount(receipt);
             if (bonusAmount.compareTo(BigDecimal.ZERO) > 0) {
-                AddBonusTransaction transaction = new AddBonusTransaction();
-                transaction.setAccount(card.getCardNumber());
-                transaction.setAmount(bonusAmount);
-                transaction.setCassa(getCassa());
-                transaction.setChekSn(getChekSn(receipt));
+                AddBonusTransaction transaction = new AddBonusTransaction(card.getCardNumber(), bonusAmount, getCassa(), getChekSn(receipt));
 
                 try {
                     log.debug("transaction {}", transaction);

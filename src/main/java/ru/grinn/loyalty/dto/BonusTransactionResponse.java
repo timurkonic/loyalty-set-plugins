@@ -11,24 +11,12 @@ public class BonusTransactionResponse {
         return transactionId;
     }
 
-    public void setTransactionId(String transactionId) {
-        this.transactionId = transactionId;
-    }
-
     public BigDecimal getNewBalanceBns() {
         return newBalanceBns;
     }
 
-    public void setNewBalanceBns(BigDecimal newBalanceBns) {
-        this.newBalanceBns = newBalanceBns;
-    }
-
     public String getError() {
         return error;
-    }
-
-    public void setError(String error) {
-        this.error = error;
     }
 
     @Override

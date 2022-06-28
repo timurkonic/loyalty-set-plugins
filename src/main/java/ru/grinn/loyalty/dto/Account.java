@@ -27,144 +27,72 @@ public class Account {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public BigDecimal getBalance() {
         return balance;
-    }
-
-    public void setBalance(BigDecimal balance) {
-        this.balance = balance;
     }
 
     public BigDecimal getBalanceBns() {
         return balanceBns;
     }
 
-    public void setBalanceBns(BigDecimal balanceBns) {
-        this.balanceBns = balanceBns;
-    }
-
     public int getType() {
         return type;
-    }
-
-    public void setType(int type) {
-        this.type = type;
     }
 
     public String getTypeName() {
         return typeName;
     }
 
-    public void setTypeName(String typeName) {
-        this.typeName = typeName;
-    }
-
     public int getActive() {
         return active;
-    }
-
-    public void setActive(int active) {
-        this.active = active;
     }
 
     public int getBlock() {
         return block;
     }
 
-    public void setBlock(int block) {
-        this.block = block;
-    }
-
     public String getBlockName() {
         return blockName;
-    }
-
-    public void setBlockName(String blockName) {
-        this.blockName = blockName;
     }
 
     public String getOwnerFamilyName() {
         return ownerFamilyName;
     }
 
-    public void setOwnerFamilyName(String ownerFamilyName) {
-        this.ownerFamilyName = ownerFamilyName;
-    }
-
     public String getOwnerFirstName() {
         return ownerFirstName;
-    }
-
-    public void setOwnerFirstName(String ownerFirstName) {
-        this.ownerFirstName = ownerFirstName;
     }
 
     public String getOwnerThirdName() {
         return ownerThirdName;
     }
 
-    public void setOwnerThirdName(String ownerThirdName) {
-        this.ownerThirdName = ownerThirdName;
-    }
-
     public Date getOwnerBirthday() {
         return ownerBirthday;
-    }
-
-    public void setOwnerBirthday(Date ownerBirthday) {
-        this.ownerBirthday = ownerBirthday;
     }
 
     public String getOwnerPhone() {
         return ownerPhone;
     }
 
-    public void setOwnerPhone(String ownerPhone) {
-        this.ownerPhone = ownerPhone;
-    }
-
     public String getOwnerEmail() {
         return ownerEmail;
-    }
-
-    public void setOwnerEmail(String ownerEmail) {
-        this.ownerEmail = ownerEmail;
     }
 
     public int getOwnerFilled() {
         return ownerFilled;
     }
 
-    public void setOwnerFilled(int ownerFilled) {
-        this.ownerFilled = ownerFilled;
-    }
-
     public BigDecimal getDiscount() {
         return discount;
-    }
-
-    public void setDiscount(BigDecimal discount) {
-        this.discount = discount;
     }
 
     public String getBirthdayAction() {
         return birthdayAction;
     }
 
-    public void setBirthdayAction(String birthdayAction) {
-        this.birthdayAction = birthdayAction;
-    }
-
     public String getWtmpass() {
         return wtmpass;
-    }
-
-    public void setWtmpass(String wtmpass) {
-        this.wtmpass = wtmpass;
     }
 
     @Override
