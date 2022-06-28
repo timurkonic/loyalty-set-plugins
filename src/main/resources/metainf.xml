@@ -12,6 +12,10 @@
             <Description>Плагин карт ЛИНИЯ</Description>
         </CardPlugin>
 
+        <CardPlugin localeKey="sbercardplugin.description" id="grinn.loyalty.sbercardplugin">
+            <Description>Плагин карт Сбермаркет</Description>
+        </CardPlugin>
+
         <LoyaltyPlugin localeKey="loyaltyplugin.description" id="grinn.loyalty.loyaltyplugin">
             <Description>Плагин лояльности карт ЛИНИЯ</Description>
         </LoyaltyPlugin>
