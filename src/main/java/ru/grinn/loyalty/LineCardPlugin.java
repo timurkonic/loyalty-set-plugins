@@ -13,6 +13,9 @@ import ru.crystals.pos.spi.plugin.card.*;
 import ru.crystals.pos.spi.receipt.*;
 
 import ru.grinn.loyalty.dto.Account;
+import ru.grinn.loyalty.dto.BonusTransactionResponse;
+import ru.grinn.loyalty.dto.RollbackTransactionResponse;
+import ru.grinn.loyalty.dto.WriteOffBonusTransaction;
 
 @POSPlugin(id = LineCardPlugin.PLUGIN_NAME)
 public class LineCardPlugin extends LinePlugin implements CardPlugin {
@@ -20,9 +23,12 @@ public class LineCardPlugin extends LinePlugin implements CardPlugin {
 
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
+    private APIRequest apiRequest;
+
     @PostConstruct
     void init() {
         super.init();
+        apiRequest = new APIRequest(properties);
         log.info("Plugin {} loaded", this.getClass());
     }
 
@@ -56,14 +62,14 @@ public class LineCardPlugin extends LinePlugin implements CardPlugin {
             return new CardInfo(CardSearchResponseStatus.UNKNOWN_CARD, null);
 
         CardSearchResponse response = findCardByNumber(cardNumber);
-        if (!response.getResponseStatus().equals(CardSearchResponseStatus.OK)) {
+        if (!response.getResponseStatus().equals(CardSearchResponseStatus.OK))
             return new CardInfo(response.getResponseStatus(), null);
-        }
+
         Card card = response.getCard();
         LinkedHashMap<String, String> cardInfoMap = new LinkedHashMap<>();
         if (card.getCardHolder() != null) {
             if (card.getCardHolder().getLastName() != null && card.getCardHolder().getFirstName() != null && card.getCardHolder().getMiddleName() != null)
-            cardInfoMap.put("Покупатель", String.format("%s %s %s", card.getCardHolder().getLastName(), card.getCardHolder().getFirstName(), card.getCardHolder().getMiddleName()));
+                cardInfoMap.put("Покупатель", String.format("%s %s %s", card.getCardHolder().getLastName(), card.getCardHolder().getFirstName(), card.getCardHolder().getMiddleName()));
             if (card.getCardHolder().getBirthDate() != null)
                 cardInfoMap.put("Дата рождения", dateFormat.format(card.getCardHolder().getBirthDate()));
             if (card.getCardHolder().getPhone() != null)
@@ -82,9 +88,8 @@ public class LineCardPlugin extends LinePlugin implements CardPlugin {
         if (Integer.parseInt(card.getExtendedAttributes().getOrDefault("block", "0")) > 0)
             cardInfoMap.put("Блокировка", card.getExtendedAttributes().get("blockName"));
 
-        if (Boolean.parseBoolean(card.getExtendedAttributes().getOrDefault("birthdayAction", "false"))) {
+        if (Boolean.parseBoolean(card.getExtendedAttributes().getOrDefault("birthdayAction", "false")))
             cardInfoMap.put("Акция к ДР", "Активна");
-        }
 
         CardInfo cardInfo = new CardInfo(CardSearchResponseStatus.OK, cardInfoMap);
         cardInfo.setTitle(card.getExtendedAttributes().get("typeName"));
@@ -93,12 +98,51 @@ public class LineCardPlugin extends LinePlugin implements CardPlugin {
 
     @Override
     public BonusWriteOffOperationResponse writeOff(Card bonusCard, BigDecimal bonusesToWriteOff, Receipt receipt) {
-        return null;
+        log.debug("writeOff({}, {})", bonusCard.getCardNumber(), bonusesToWriteOff);
+        BonusWriteOffOperationResponse response = new BonusWriteOffOperationResponse();
+        try {
+            WriteOffBonusTransaction transaction = new WriteOffBonusTransaction(bonusCard.getCardNumber(), bonusesToWriteOff, getCassa(), getChekSn(receipt));
+
+            log.debug("transaction {}", transaction);
+            BonusTransactionResponse bonusTransactionResponse = apiRequest.writeOffBonus(transaction);
+            log.debug("response {}", bonusTransactionResponse);
+
+            if (bonusTransactionResponse.getError() == null) {
+                response.setResponseStatus(BonusOperationStatus.OK);
+                response.setTxId(bonusTransactionResponse.getTransactionId());
+            }
+            else {
+                response.setResponseStatus(BonusOperationStatus.ERROR);
+                response.setOperatorMessage(bonusTransactionResponse.getError());
+            }
+        }
+        catch (Exception e) {
+            log.debug("writeoff error", e);
+            response.setResponseStatus(BonusOperationStatus.ERROR);
+        }
+        return response;
     }
 
     @Override
     public BonusOperationResponse rollback(String txId) {
-        return null;
+        log.debug("rollback({})", txId);
+        BonusOperationResponse response = new BonusOperationResponse();
+        try {
+            RollbackTransactionResponse rollbackTransactionResponse = apiRequest.rollback(txId);
+            log.debug("response {}", rollbackTransactionResponse);
+            if (rollbackTransactionResponse.getError() == null) {
+                response.setResponseStatus(BonusOperationStatus.OK);
+                response.setTxId("R" + txId);
+            }
+            else {
+                response.setResponseStatus(BonusOperationStatus.ERROR);
+            }
+        }
+        catch (Exception e) {
+            log.debug("rollback error", e);
+            response.setResponseStatus(BonusOperationStatus.ERROR);
+        }
+        return response;
     }
 
     private String extractCardNumber(CardSearchRequest request) {
@@ -112,7 +156,7 @@ public class LineCardPlugin extends LinePlugin implements CardPlugin {
         try {
             log.debug("findCardByNumber({})", number);
 
-            Account account = new APIRequest(properties).getAccount(number);
+            Account account = apiRequest.getAccount(number);
             log.debug("getAccount: {}", account);
 
             CardEntity card = new CardEntity();

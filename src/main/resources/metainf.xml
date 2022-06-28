@@ -12,5 +12,9 @@
             <Description>Плагин карт ЛИНИЯ</Description>
         </CardPlugin>
 
+        <LoyaltyPlugin localeKey="loyaltyplugin.description" id="grinn.loyalty.loyaltyplugin">
+            <Description>Плагин лояльности карт ЛИНИЯ</Description>
+        </LoyaltyPlugin>
+
     </ExternalService>
 </SetIntegration>
