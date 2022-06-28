@@ -11,7 +11,7 @@ public final class PluginConfigurationLoader {
 
     private static PluginConfiguration pluginConfiguration;
 
-    private Logger log;
+    private final Logger log;
 
     public PluginConfigurationLoader(Logger log) {
         this.log = log;

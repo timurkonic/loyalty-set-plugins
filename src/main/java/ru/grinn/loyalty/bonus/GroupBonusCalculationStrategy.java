@@ -6,7 +6,6 @@ import ru.crystals.pos.spi.receipt.Receipt;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Arrays;
 import java.util.Set;
 
 public class GroupBonusCalculationStrategy extends AbstractCalculationStrategy {

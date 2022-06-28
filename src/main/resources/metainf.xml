@@ -16,5 +16,10 @@
             <Description>Плагин лояльности карт ЛИНИЯ</Description>
         </LoyaltyPlugin>
 
+        <PaymentPlugin paymentType="PREPAY" localeKey="paymentplugin.description" id="grinn.loyalty.paymentplugin">
+            <Description>Плагин оплат карт ЛИНИЯ</Description>
+            <PersistedField exportable="true" key="grinn.loyalty.payment.card" visible="true" localeKey="paymentplugin.card"/>
+        </PaymentPlugin>
+
     </ExternalService>
 </SetIntegration>

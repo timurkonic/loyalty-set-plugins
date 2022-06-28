@@ -14,9 +14,7 @@ import ru.crystals.pos.spi.annotation.*;
 import ru.crystals.pos.spi.feedback.*;
 import ru.crystals.pos.spi.plugin.goods.*;
 import ru.crystals.pos.spi.receipt.*;
-import ru.grinn.loyalty.dto.AddBonusTransaction;
 import ru.grinn.loyalty.dto.AddRubleTransaction;
-import ru.grinn.loyalty.dto.BonusTransactionResponse;
 import ru.grinn.loyalty.dto.RubleTransactionResponse;
 
 @POSPlugin(id = LineGoodsPlugin.PLUGIN_NAME)
@@ -26,7 +24,8 @@ public class LineGoodsPlugin extends LinePlugin implements GoodsPlugin {
     private HashMap<String,BigDecimal> cardAmountList;
 
     private APIRequest apiRequest;
-    
+    private APIObjectMapper apiObjectMapper;
+
     @PostConstruct
     void init() {
         cardAmountList = new HashMap<>();
@@ -39,6 +38,7 @@ public class LineGoodsPlugin extends LinePlugin implements GoodsPlugin {
         cardAmountList.put("9999000000114", new BigDecimal(300));
 
         apiRequest = new APIRequest(properties);
+        apiObjectMapper = new APIObjectMapper();
 
         log.info("Plugin {} loaded", this.getClass());
     }
@@ -81,14 +81,14 @@ public class LineGoodsPlugin extends LinePlugin implements GoodsPlugin {
                 AddRubleTransaction transaction = new AddRubleTransaction(item.getData().get("card"), amount, getCassa(), getChekSn(receipt));
                 try {
                     log.debug("transaction {}", transaction);
-                    RubleTransactionResponse rubleTransactionResponse = new APIRequest(properties).addRuble(transaction);
+                    RubleTransactionResponse rubleTransactionResponse = apiRequest.addRuble(transaction);
                     log.debug("response {}", rubleTransactionResponse);
                     return null;
                 }
                 catch (Exception e) {
                     try {
                         LoyProviderFeedback feedback = new LoyProviderFeedback();
-                        feedback.setPayload(new APIObjectMapper().writeValueAsString(transaction));
+                        feedback.setPayload(apiObjectMapper.writeValueAsString(transaction));
                         log.debug("return feedback {}", feedback.getPayload());
                         return feedback;
                     }
@@ -104,9 +104,9 @@ public class LineGoodsPlugin extends LinePlugin implements GoodsPlugin {
     @Override
     public void onRepeatSend(Feedback feedback) throws Exception {
         log.debug("onRepeatSend({}) called, payload {}", feedback, feedback.getPayload());
-        AddRubleTransaction transaction = new APIObjectMapper().readValue(feedback.getPayload(), AddRubleTransaction.class);
+        AddRubleTransaction transaction = apiObjectMapper.readValue(feedback.getPayload(), AddRubleTransaction.class);
         log.debug("transaction {}", transaction);
-        RubleTransactionResponse rubleTransactionResponse = new APIRequest(properties).addRuble(transaction);
+        RubleTransactionResponse rubleTransactionResponse = apiRequest.addRuble(transaction);
         log.debug("response {}", rubleTransactionResponse);
     }
 

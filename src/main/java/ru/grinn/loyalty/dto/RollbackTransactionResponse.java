@@ -1,7 +1,5 @@
 package ru.grinn.loyalty.dto;
 
-import java.math.BigDecimal;
-
 public class RollbackTransactionResponse {
     private String transactionId;
     private String error;

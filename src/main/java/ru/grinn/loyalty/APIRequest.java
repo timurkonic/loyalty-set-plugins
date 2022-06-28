@@ -8,8 +8,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public final class APIRequest {
-    private IntegrationProperties properties;
-    private APIObjectMapper apiObjectMapper;
+    private final IntegrationProperties properties;
+    private final APIObjectMapper apiObjectMapper;
 
     public APIRequest(IntegrationProperties properties) {
         this.properties = properties;
@@ -55,6 +55,18 @@ public final class APIRequest {
     }
 
     public RubleTransactionResponse addRuble(AddRubleTransaction transaction) throws IOException {
+        HttpURLConnection connection = getConnection("transaction/", "POST");
+        apiObjectMapper.writeValue(connection.getOutputStream(), transaction);
+        return apiObjectMapper.readValue(connection.getInputStream(), RubleTransactionResponse.class);
+    }
+
+    public RubleTransactionResponse payRuble(PayRubleTransaction transaction) throws IOException {
+        HttpURLConnection connection = getConnection("transaction/", "POST");
+        apiObjectMapper.writeValue(connection.getOutputStream(), transaction);
+        return apiObjectMapper.readValue(connection.getInputStream(), RubleTransactionResponse.class);
+    }
+
+    public RubleTransactionResponse retRuble(RetRubleTransaction transaction) throws IOException {
         HttpURLConnection connection = getConnection("transaction/", "POST");
         apiObjectMapper.writeValue(connection.getOutputStream(), transaction);
         return apiObjectMapper.readValue(connection.getInputStream(), RubleTransactionResponse.class);
