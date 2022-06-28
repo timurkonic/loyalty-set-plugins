@@ -25,6 +25,10 @@
             <PersistedField exportable="true" key="grinn.loyalty.payment.card" visible="true" localeKey="paymentplugin.card"/>
         </PaymentPlugin>
 
+        <GoodsPlugin localeKey="goodsplugin.description" id="grinn.loyalty.goodsplugin">
+            <Description>Плагин товаров ЛИНИЯ</Description>
+        </GoodsPlugin>
+
         <AdvertisingActionConditionPlugin localeKey="actionbirthdayplugin.description" id="grinn.loyalty.actionbirthdayplugin">
             <Description>Плагин акции на день рождения ЛИНИЯ</Description>
             <Options>
