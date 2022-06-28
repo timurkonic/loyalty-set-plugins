@@ -37,5 +37,11 @@
             </Options>
         </TechProcessPlugin>
 
+        <AdvertisingActionConditionPlugin localeKey="actiondinnerdiscountplugin.description" id="grinn.loyalty.dinnerdiscountplugin">
+            <Description>Плагин акции скидки в столовой</Description>
+            <Options>
+            </Options>
+        </AdvertisingActionConditionPlugin>
+
     </ExternalService>
 </SetIntegration>
