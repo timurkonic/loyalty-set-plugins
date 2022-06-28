@@ -17,8 +17,7 @@ public final class APIRequest {
     }
 
     private String getApiUrl() {
-        //return properties.getServiceProperties().get("url");
-        return "http://172.31.1.100/sapi/";
+        return properties.getServiceProperties().get("url");
     }
 
     private HttpURLConnection getConnection(String uri, String method) throws IOException {
