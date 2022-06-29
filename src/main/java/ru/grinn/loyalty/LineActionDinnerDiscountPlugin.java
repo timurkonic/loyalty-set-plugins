@@ -14,6 +14,7 @@ public class LineActionDinnerDiscountPlugin extends LinePlugin implements Advert
 
     @PostConstruct
     void init() {
+        super.init();
         log.info("Plugin {} loaded", this.getClass());
     }
 

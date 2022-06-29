@@ -28,6 +28,8 @@ public class LineGoodsPlugin extends LinePlugin implements GoodsPlugin {
 
     @PostConstruct
     void init() {
+        super.init();
+
         cardAmountList = new HashMap<>();
         cardAmountList.put("9999000000015", new BigDecimal(1000));
         cardAmountList.put("9999000000022", new BigDecimal(2000));

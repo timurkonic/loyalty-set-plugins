@@ -3,6 +3,8 @@ package ru.grinn.loyalty;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import javax.annotation.PostConstruct;
+
+import org.slf4j.Logger;
 import ru.crystals.pos.api.card.*;
 import ru.crystals.pos.api.plugin.*;
 import ru.crystals.pos.api.plugin.card.*;
@@ -11,16 +13,18 @@ import ru.crystals.pos.spi.plugin.card.*;
 import ru.crystals.pos.spi.receipt.*;
 
 @POSPlugin(id = LineCardSberPlugin.PLUGIN_NAME)
-public class LineCardSberPlugin extends LinePlugin implements CardPlugin {
+public class LineCardSberPlugin implements CardPlugin {
     public static final String PLUGIN_NAME = "grinn.loyalty.sbercardplugin";
+
+    @Inject
+    protected static Logger log;
 
     @PostConstruct
     void init() {
         log.info("Plugin {} loaded", this.getClass());
     }
 
-    @Override
-    protected boolean isCardNumber(String cardNumber) {
+    protected boolean isSberCardNumber(String cardNumber) {
         return cardNumber != null && cardNumber.matches("^9999\\d{9}$");
     }
 
@@ -29,7 +33,7 @@ public class LineCardSberPlugin extends LinePlugin implements CardPlugin {
         String cardNumber = extractCardNumber(request);
         log.debug("searchCard({})", cardNumber);
 
-        if (!isCardNumber(cardNumber))
+        if (!isSberCardNumber(cardNumber))
             return new CardSearchResponse(CardSearchResponseStatus.UNKNOWN_CARD);
 
         CardSearchResponse result = findCardByNumber(cardNumber);
@@ -42,7 +46,7 @@ public class LineCardSberPlugin extends LinePlugin implements CardPlugin {
     public CardInfo getCardInfo(CardSearchRequest request) {
         String cardNumber = extractCardNumber(request);
 
-        if (!isCardNumber(cardNumber))
+        if (!isSberCardNumber(cardNumber))
             return new CardInfo(CardSearchResponseStatus.UNKNOWN_CARD, null);
 
         CardSearchResponse response = findCardByNumber(cardNumber);

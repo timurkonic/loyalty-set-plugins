@@ -32,7 +32,7 @@ public class LineLoyaltyPlugin extends LinePlugin implements LoyaltyPlugin {
         apiRequest = new APIRequest(properties);
 
         log.info("Plugin {} loaded", this.getClass());
-        log.info("Версия от 27.06.2022");
+        log.info("Версия от 28.06.2022");
     }
 
     @Override

@@ -19,6 +19,7 @@ public class LinePaymentPlugin extends LinePlugin implements PaymentPlugin {
 
     @PostConstruct
     void init() {
+        super.init();
         apiRequest = new APIRequest(properties);
         log.info("Plugin {} loaded", this.getClass());
     }

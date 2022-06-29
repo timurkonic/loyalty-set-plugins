@@ -16,6 +16,7 @@ public class LineActionBirthdayPlugin extends LinePlugin implements AdvertisingA
 
     @PostConstruct
     void init() {
+        super.init();
         log.info("Plugin {} loaded", this.getClass());
     }
 
