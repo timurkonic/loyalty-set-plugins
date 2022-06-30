@@ -32,7 +32,7 @@ public class LineLoyaltyPlugin extends LinePlugin implements LoyaltyPlugin {
         apiRequest = new APIRequest(properties);
 
         log.info("Plugin {} loaded", this.getClass());
-        log.info("Версия от 28.06.2022");
+        log.info("Версия от 30.06.2022");
     }
 
     @Override
@@ -77,6 +77,8 @@ public class LineLoyaltyPlugin extends LinePlugin implements LoyaltyPlugin {
                 log.debug("canChargeOffItems {}", canChargeOffItems); // stingfire
                 BigDecimal cardBalance = card.getBonusBalance().getBalance();
                 BigDecimal maxBonusToWriteOff = canChargeOffItems.min(cardBalance);
+                if (Integer.parseInt(card.getExtendedAttributes().getOrDefault("ownerFilled", "0")) == 0)
+                    maxBonusToWriteOff = BigDecimal.ZERO;
                 log.debug("maxBonusToWriteOff {}", maxBonusToWriteOff); // stingfire
                 BigDecimal maxBonusToWriteOffCents = maxBonusToWriteOff.subtract(maxBonusToWriteOff.setScale(0, RoundingMode.DOWN));
 
